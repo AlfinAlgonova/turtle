@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐢 Python Turtle Coding Challenge</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #06b6d4;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 4px solid #6366f1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            background: #4f46e5;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .page {
+            display: none;
+            padding: 24px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Review Page Styling */
+        .review-card {
+            background: #f1f5f9;
+            border-left: 6px solid var(--primary);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .review-card h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        pre, code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 10px;
+            border-radius: 6px;
+            display: block;
+            margin: 8px 0;
+            overflow-x: auto;
+            font-size: 0.95rem;
+        }
+
+        .task-box {
+            background: #eff6ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .task-box h2 {
+            font-size: 1.2rem;
+            color: #1e40af;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .editor-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .editor-label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #334155;
+        }
+
+        textarea.code-editor {
+            width: 100%;
+            height: 180px;
+            background-color: #0f172a;
+            color: #38bdf8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #334155;
+            outline: none;
+            resize: vertical;
+            tab-size: 4;
+        }
+
+        textarea.code-editor:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .left-buttons, .right-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        .btn-hint { background-color: #f59e0b; color: white; }
+        .btn-hint:hover { background-color: #d97706; }
+
+        .btn-answer { background-color: #06b6d4; color: white; }
+        .btn-answer:hover { background-color: #0891b2; }
+
+        .btn-copy { background-color: #64748b; color: white; }
+        .btn-copy:hover { background-color: #475569; }
+
+        .btn-next { background-color: #10b981; color: white; }
+        .btn-next:hover { background-color: #059669; }
+
+        .btn-prev { background-color: #94a3b8; color: white; }
+        .btn-prev:hover { background-color: #64748b; }
+
+        .btn-start { background-color: #4f46e5; color: white; font-size: 1.1rem; padding: 12px 28px; }
+        .btn-start:hover { background-color: #4338ca; }
+
+        .drawer {
+            display: none;
+            margin-top: 14px;
+            padding: 16px;
+            border-radius: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .drawer-hint {
+            background-color: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .drawer-answer {
+            background-color: #ecfeff;
+            border-left: 5px solid #06b6d4;
+            color: #155e75;
+        }
+
+        .drawer-answer pre {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Toast notification */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* Final Page Styling */
+        .completion-box {
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .completion-box h2 {
+            font-size: 2rem;
+            color: #047857;
+            margin-bottom: 12px;
+        }
+
+        .completion-box p {
+            font-size: 1.1rem;
+            color: #374151;
+            margin-bottom: 24px;
+        }
+
+        .badge-grid {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            border: 2px solid #10b981;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.1rem; }
+            .button-group { flex-direction: column; align-items: stretch; }
+            .left-buttons, .right-buttons { width: 100%; justify-content: space-between; }
+            button { flex: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="header-title">🐢 Python Turtle Challenge</h1>
+            <span id="page-indicator" style="font-weight: bold; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px;">Review</span>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </header>
+
+        <div id="page-review" class="page active">
+            <h2 style="margin-bottom: 16px; color: var(--primary);">📚 Quick Review Sebelum Mulai</h2>
+            <p style="margin-bottom: 16px; line-height: 1.6;">
+                Selamat datang! Sebelum menyelesaikan 10 challenge, mari kita ingat kembali 4 konsep utama Python Turtle yang akan kamu gunakan:
+            </p>
+
+            <div class="review-card">
+                <h3>🔄 1. FOR (Perulangan)</h3>
+                <p>Digunakan untuk mengulang perintah agar tidak perlu menuliskan kode yang sama berulang kali.</p>
+<code>for i in range(4):
+    forward(100)
+    right(90)</code>
+            </div>
+
+            <div class="review-card">
+                <h3>🔀 2. IF ELSE (Kondisi)</h3>
+                <p>Digunakan untuk membuat keputusan. Program akan memilih apa yang harus digambar berdasarkan nilai variabel.</p>
+<code>if waktu == "siang":
+    color("yellow")
+else:
+    color("gray")</code>
+            </div>
+
+            <div class="review-card">
+                <h3>📦 3. DEF (Membuat Function)</h3>
+                <p>Digunakan untuk membungkus sekumpulan perintah gambar menjadi satu nama khusus.</p>
+<code>def buat_kotak():
+    for i in range(4):
+        forward(100)
+        right(90)</code>
+            </div>
+
+            <div class="review-card">
+                <h3>🚀 4. Memanggil Function</h3>
+                <p>Menuliskan <code>def</code> saja tidak akan menggambar apa-apa. Kamu harus <b>memanggilnya</b>!</p>
+<code>buat_kotak()  # <--- Memanggil function</code>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px;">
+                <button class="btn-start" onclick="goToChallenge(1)">🚀 Mulai Challenge 1</button>
+            </div>
+        </div>
+
+        <div id="page-challenge" class="page">
+            <div class="task-box">
+                <h2 id="task-title">🎯 Task Title</h2>
+                <p id="task-desc">Task description goes here.</p>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-label">💻 Code Editor (Ketik kode Python di sini):</div>
+                <textarea id="code-editor" class="code-editor" spellcheck="false" placeholder="# Ketik kode Python Turtle kamu di sini..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <div class="left-buttons">
+                    <button class="btn-hint" onclick="toggleDrawer('hint')">💡 Hint</button>
+                    <button class="btn-answer" onclick="toggleDrawer('answer')">👀 Lihat Kunci Jawaban</button>
+                </div>
+                <div class="right-buttons">
+                    <button id="btn-prev" class="btn-prev" onclick="prevChallenge()">⬅️ Prev</button>
+                    <button id="btn-next" class="btn-next" onclick="nextChallenge()">➡️ Next Challenge</button>
+                </div>
+            </div>
+
+            <div id="drawer-hint" class="drawer drawer-hint">
+                <strong>💡 Hint:</strong>
+                <p id="hint-text" style="margin-top: 6px;"></p>
+            </div>
+
+            <div id="drawer-answer" class="drawer drawer-answer">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>👀 Kunci Jawaban:</strong>
+                    <button class="btn-copy" onclick="copyAnswerCode()">📋 Copy Code</button>
+                </div>
+                <pre><code id="answer-code">from turtle import *
+# ...</code></pre>
+                <p id="answer-explain" style="font-size: 0.9rem; line-height: 1.4;"></p>
+            </div>
+        </div>
+
+        <div id="page-final" class="page">
+            <div class="completion-box">
+                <div style="font-size: 4rem; margin-bottom: 10px;">🎉🏆🐢</div>
+                <h2>Turtle Challenge Completed!</h2>
+                <p>Hebat sekali! Kamu sudah menyelesaikan 10 challenge Python Turtle dengan sukses!</p>
+                
+                <div class="badge-grid">
+                    <div class="badge">🔄 Loop Master (for)</div>
+                    <div class="badge">🔀 Logic Wizard (if/else)</div>
+                    <div class="badge">📦 Function Crafting (def)</div>
+                </div>
+
+                <div class="button-group" style="justify-content: center; gap: 15px;">
+                    <button class="btn-start" style="background-color: #6366f1;" onclick="goToReview()">📚 Review Materi</button>
+                    <button class="btn-start" style="background-color: #10b981;" onclick="restartChallenges()">🔄 Restart Challenge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Kode berhasil disalin! 📋</div>
+
+    <script>
+        const challengesData = [
+            {
+                id: 1,
+                title: "Challenge 1 — Kotak dengan FOR",
+                task: "Buat sebuah kotak dengan panjang sisi 100 menggunakan perulangan <code>for</code>. Jangan menulis <code>forward()</code> dan <code>right()</code> sebanyak 4 kali secara manual!",
+                hint: "Ingat, kotak memiliki 4 sisi. Coba pikirkan bagaimana for dengan range(4) bisa mengulang dua perintah sebanyak 4 kali.",
+                answerCode: `from turtle import *
+
+for i in range(4):
+    forward(100)
+    right(90)`,
+                answerExplain: "<b>Penjelasan:</b> <code>for i in range(4):</code> akan mengulang baris di dalamnya sebanyak 4 kali untuk membuat 4 sisi kotak secara otomatis."
+            },
+            {
+                id: 2,
+                title: "Challenge 2 — Segitiga dengan FOR",
+                task: "Buat sebuah segitiga menggunakan <code>for</code>. Gunakan <code>forward()</code> dan <code>right()</code>. Sudut yang digunakan untuk segitiga sama sisi adalah 120 derajat.",
+                hint: "Segitiga memiliki 3 sisi. Gunakan range(3) dan putar turtle sebesar 120 derajat setiap kali melangkah.",
+                answerCode: `from turtle import *
+
+for i in range(3):
+    forward(120)
+    right(120)`,
+                answerExplain: "<b>Penjelasan:</b> Perulangan berjalan 3 kali. Setiap putaran membuat 1 garis lurus (120 unit) lalu berbelok 120 derajat untuk membentuk segitiga."
+            },
+            {
+                id: 3,
+                title: "Challenge 3 — Bintang ⭐",
+                task: "Buat gambar bintang 5 sudut menggunakan Turtle dan perulangan <code>for</code>. Sudut belok untuk bintang adalah 144 derajat.",
+                hint: "Bintang memiliki 5 garis lurus. Gunakan range(5), forward(150), dan right(144). Kamu juga boleh menambahkan warna!",
+                answerCode: `from turtle import *
+
+color("orange")
+for i in range(5):
+    forward(150)
+    right(144)`,
+                answerExplain: "<b>Penjelasan:</b> Perulangan diulang 5 kali. Sudut 144 derajat menciptakan garis silang yang membentuk bintang sempurna."
+            },
+            {
+                id: 4,
+                title: "Challenge 4 — Banyak Kotak",
+                task: "Buat 3 kotak dengan ukuran yang sama secara terpisah. Gunakan <code>penup()</code>, <code>goto()</code>, dan <code>pendown()</code> untuk pindah posisi antar kotak.",
+                hint: "Setelah membuat satu kotak dengan for, angkat pena dengan penup(), pindahkan dengan goto(x, y), turunkan pena dengan pendown(), lalu buat kotak berikutnya.",
+                answerCode: `from turtle import *
+
+# Kotak 1
+for i in range(4):
+    forward(50)
+    right(90)
+
+# Pindah posisi
+penup()
+goto(100, 0)
+pendown()
+
+# Kotak 2
+for i in range(4):
+    forward(50)
+    right(90)
+
+# Pindah posisi
+penup()
+goto(200, 0)
+pendown()
+
+# Kotak 3
+for i in range(4):
+    forward(50)
+    right(90)`,
+                answerExplain: "<b>Penjelasan:</b> Kita menggunakan <code>penup()</code> dan <code>pendown()</code> agar saat berpindah titik menggunakan <code>goto()</code>, Turtle tidak meninggalkan garis coretan."
+            },
+            {
+                id: 5,
+                title: "Challenge 5 — Siang atau Malam 🌞🌙",
+                task: "Buat sebuah variabel bernama <code>waktu</code>. Jika <code>waktu == 'siang'</code>, gambar matahari (lingkaran warna kuning). Jika tidak, gambar bulan.",
+                hint: "Kamu bisa menyimpan kondisi 'siang' atau 'malam' di variabel, kemudian gunakan struktur if else untuk menentukan warna dan gambar.",
+                answerCode: `from turtle import *
+
+waktu = "siang"
+
+if waktu == "siang":
+    color("yellow")
+    begin_fill()
+    circle(50)
+    end_fill()
+else:
+    color("gray")
+    begin_fill()
+    circle(50)
+    end_fill()`,
+                answerExplain: "<b>Penjelasan:</b> Perintah <code>if waktu == 'siang':</code> memeriksa isi variabel. Karena nilainya 'siang', Turtle menjalankan bagian pertama untuk membuat matahari kuning."
+            },
+            {
+                id: 6,
+                title: "Challenge 6 — Pilih Warna",
+                task: "Buat variabel <code>warna = 'merah'</code>. Jika warna adalah 'merah', Turtle menggambar lingkaran merah. Jika bukan, Turtle menggambar lingkaran biru.",
+                hint: "Gunakan if warna == 'merah': color('red') else: color('blue') lalu panggil circle(50).",
+                answerCode: `from turtle import *
+
+warna = "merah"
+
+if warna == "merah":
+    color("red")
+else:
+    color("blue")
+
+circle(50)`,
+                answerExplain: "<b>Penjelasan:</b> <code>if else</code> digunakan untuk menentukan warna pena terlebih dahulu sebelum fungsi <code>circle(50)</code> dipanggil."
+            },
+            {
+                id: 7,
+                title: "Challenge 7 — Function Kotak",
+                task: "Buat sebuah function bernama <code>buat_kotak()</code> yang berisi perulangan menggambar kotak. Jangan lupa untuk **memanggil** function tersebut!",
+                hint: "Function dibuat dengan def buat_kotak():. Setelah selesai menulis def, pastikan kamu memanggil nama function tersebut di baris paling bawah.",
+                answerCode: `from turtle import *
+
+def buat_kotak():
+    for i in range(4):
+        forward(100)
+        right(90)
+
+# Memanggil function
+buat_kotak()`,
+                answerExplain: "<b>Penjelasan:</b> <code>def buat_kotak():</code> membuat resep/instruksi. Instruksi tersebut baru akan dijalankan saat kita memanggil <code>buat_kotak()</code>."
+            },
+            {
+                id: 8,
+                title: "Challenge 8 — Function Matahari",
+                task: "Buat function bernama <code>matahari()</code> yang menggambar matahari sederhana (lingkaran kuning). Setelah itu panggil function tersebut.",
+                hint: "Gunakan def matahari(): lalu masukkan perintah color('yellow') dan circle(50). Panggil matahari() di akhir kode.",
+                answerCode: `from turtle import *
+
+def matahari():
+    color("yellow")
+    begin_fill()
+    circle(50)
+    end_fill()
+
+# Memanggil function
+matahari()`,
+                answerExplain: "<b>Penjelasan:</b> Bungkusan kode menggambar matahari dimasukkan ke dalam function <code>matahari()</code> lalu dieksekusi dengan pemanggilan di baris akhir."
+            },
+            {
+                id: 9,
+                title: "Challenge 9 — Function + IF ELSE",
+                task: "Buat dua function: <code>matahari()</code> dan <code>bulan()</code>. Buat variabel <code>waktu = 'siang'</code>. Gunakan <code>if else</code> untuk memilih function mana yang akan dipanggil!",
+                hint: "Kamu memiliki dua pilihan function. Gunakan kondisi if waktu == 'siang': untuk memanggil matahari() dan else: untuk memanggil bulan().",
+                answerCode: `from turtle import *
+
+def matahari():
+    color("yellow")
+    circle(50)
+
+def bulan():
+    color("gray")
+    circle(50)
+
+waktu = "siang"
+
+if waktu == "siang":
+    matahari()
+else:
+    bulan()`,
+                answerExplain: "<b>Penjelasan:</b> <code>if else</code> dapat digunakan secara cerdas untuk memilih function mana yang ingin dijalankan berdasarkan kondisi variabel."
+            },
+            {
+                id: 10,
+                title: "Challenge 10 — Mini Turtle World 🌍",
+                task: "Buat dunia mini Turtle! Buat function <code>matahari()</code>, <code>bulan()</code>, <code>awan()</code>, dan <code>bintang()</code>. Jika <code>waktu == 'siang'</code> panggil matahari & awan. Jika tidak, panggil bulan & bintang!",
+                hint: "Gunakan kombinasi def untuk tiap elemen, perulangan for di dalam function (misal untuk bintang/awan), serta if else untuk mengatur suasana siang/malam.",
+                answerCode: `from turtle import *
+
+def matahari():
+    color("yellow")
+    circle(40)
+
+def awan():
+    color("cyan")
+    circle(20)
+
+def bulan():
+    color("gray")
+    circle(40)
+
+def bintang():
+    color("gold")
+    for i in range(5):
+        forward(30)
+        right(144)
+
+waktu = "siang"
+
+if waktu == "siang":
+    matahari()
+    penup()
+    goto(60, 20)
+    pendown()
+    awan()
+else:
+    bulan()
+    penup()
+    goto(60, 20)
+    pendown()
+    bintang()`,
+                answerExplain: "<b>Penjelasan:</b> Selamat! Kamu berhasil menggabungkan <code>def</code>, <code>for</code>, <code>if else</code>, dan pergerakan Turtle menjadi program utuh!"
+            }
+        ];
+
+        let currentChallengeIndex = 0; // 0 means Review, 1-10 are challenges, 11 is Final
+        const userCodeStore = {};
+
+        // DOM Elements
+        const headerTitle = document.getElementById('header-title');
+        const pageIndicator = document.getElementById('page-indicator');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const pageReview = document.getElementById('page-review');
+        const pageChallenge = document.getElementById('page-challenge');
+        const pageFinal = document.getElementById('page-final');
+
+        const taskTitle = document.getElementById('task-title');
+        const taskDesc = document.getElementById('task-desc');
+        const codeEditor = document.getElementById('code-editor');
+        const hintText = document.getElementById('hint-text');
+        const answerCode = document.getElementById('answer-code');
+        const answerExplain = document.getElementById('answer-explain');
+
+        const drawerHint = document.getElementById('drawer-hint');
+        const drawerAnswer = document.getElementById('drawer-answer');
+
+        function updateUI() {
+            // Close drawers
+            drawerHint.style.display = 'none';
+            drawerAnswer.style.display = 'none';
+
+            if (currentChallengeIndex === 0) {
+                // Review Page
+                pageReview.classList.add('active');
+                pageChallenge.classList.remove('active');
+                pageFinal.classList.remove('active');
+
+                headerTitle.textContent = "🐢 Python Turtle Challenge";
+                pageIndicator.textContent = "Quick Review";
+                progressBar.style.width = "0%";
+            } else if (currentChallengeIndex >= 1 && currentChallengeIndex <= 10) {
+                // Challenge Page
+                pageReview.classList.remove('active');
+                pageChallenge.classList.add('active');
+                pageFinal.classList.remove('active');
+
+                const data = challengesData[currentChallengeIndex - 1];
+                
+                headerTitle.textContent = "🐢 Turtle Challenge";
+                pageIndicator.textContent = `Challenge ${data.id} / 10`;
+                progressBar.style.width = `${(data.id / 10) * 100}%`;
+
+                taskTitle.textContent = data.title;
+                taskDesc.innerHTML = data.task;
+                hintText.textContent = data.hint;
+                answerCode.textContent = data.answerCode;
+                answerExplain.innerHTML = data.answerExplain;
+
+                // Load saved code or empty
+                codeEditor.value = userCodeStore[data.id] || "";
+
+                // Prev/Next button config
+                document.getElementById('btn-prev').style.display = data.id === 1 ? 'none' : 'inline-flex';
+            } else {
+                // Final Page
+                pageReview.classList.remove('active');
+                pageChallenge.classList.remove('active');
+                pageFinal.classList.add('active');
+
+                headerTitle.textContent = "🎉 Selamat!";
+                pageIndicator.textContent = "Selesai";
+                progressBar.style.width = "100%";
+            }
+        }
+
+        // Save current code
+        function saveCurrentCode() {
+            if (currentChallengeIndex >= 1 && currentChallengeIndex <= 10) {
+                userCodeStore[currentChallengeIndex] = codeEditor.value;
+            }
+        }
+
+        function goToChallenge(num) {
+            saveCurrentCode();
+            currentChallengeIndex = num;
+            updateUI();
+        }
+
+        function nextChallenge() {
+            saveCurrentCode();
+            currentChallengeIndex++;
+            updateUI();
+        }
+
+        function prevChallenge() {
+            saveCurrentCode();
+            if (currentChallengeIndex > 1) {
+                currentChallengeIndex--;
+                updateUI();
+            }
+        }
+
+        function goToReview() {
+            saveCurrentCode();
+            currentChallengeIndex = 0;
+            updateUI();
+        }
+
+        function restartChallenges() {
+            for (let i = 1; i <= 10; i++) {
+                userCodeStore[i] = "";
+            }
+            currentChallengeIndex = 1;
+            updateUI();
+        }
+
+        function toggleDrawer(type) {
+            if (type === 'hint') {
+                const isVisible = drawerHint.style.display === 'block';
+                drawerHint.style.display = isVisible ? 'none' : 'block';
+                drawerAnswer.style.display = 'none';
+            } else if (type === 'answer') {
+                const isVisible = drawerAnswer.style.display === 'block';
+                drawerAnswer.style.display = isVisible ? 'none' : 'block';
+                drawerHint.style.display = 'none';
+            }
+        }
+
+        function copyAnswerCode() {
+            const codeText = answerCode.textContent;
+            
+            // Fallback copy method for iframe compatibility
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = codeText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            showToast("Kode Kunci Jawaban berhasil disalin! 📋");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 2500);
+        }
+
+        // Enable Tab key support inside textarea editor
+        codeEditor.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+
+                // Insert 4 spaces for Python indentation
+                this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Initialize UI on load
+        window.onload = function() {
+            updateUI();
+        };
+    </script>
+</body>
+</html>
